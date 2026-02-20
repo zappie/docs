@@ -35,7 +35,7 @@ jobs:
         with:
           repository: zappie/api
           path: api
-          token: ${{ secrets.API_REPO_TOKEN }}
+          ssh-key: ${{ secrets.API_DEPLOY_KEY }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
