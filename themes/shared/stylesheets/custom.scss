@@ -1,0 +1,64 @@
+// Search box injected above #nav by themes/shared/javascripts/search.js
+// custom.scss is imported before base.scss so we use hardcoded values that
+// match the default theme rather than SCSS variables.
+
+#ops-search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px 6px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 10;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 4px;
+
+  .ops-search-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: #999;
+    pointer-events: none;
+  }
+
+  #ops-search-input {
+    flex: 1;
+    min-width: 0;
+    padding: 5px 8px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    background: #f9f9f9;
+    color: #222;
+    font-size: 0.8125em;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder {
+      color: #aaa;
+    }
+
+    &:focus {
+      background: #fff;
+      border-color: #0298bf;
+      box-shadow: 0 0 0 2px rgba(2, 152, 191, 0.18);
+    }
+
+    // Hide the native ✕ clear button — we handle clearing via Escape
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+    }
+  }
+
+  .ops-search-hint {
+    font-size: 0.7em;
+    color: #bbb;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: monospace;
+    flex-shrink: 0;
+    pointer-events: none;
+    line-height: 1.6;
+  }
+}

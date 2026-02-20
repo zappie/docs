@@ -1,0 +1,18 @@
+{
+  "name": "zappie-api-documentation",
+  "version": "1.0.0",
+  "description": "Zappie GraphQL API Documentation",
+  "scripts": {
+    "prepare:schemas": "node scripts/prepare-schemas.js",
+    "generate:merchant": "npm run prepare:schemas && spectaql configs/merchant.yml",
+    "generate:customer": "npm run prepare:schemas && spectaql configs/customer.yml",
+    "generate:admin": "npm run prepare:schemas && spectaql configs/admin.yml",
+    "generate:all": "npm run prepare:schemas && spectaql configs/merchant.yml && spectaql configs/customer.yml && spectaql configs/admin.yml",
+    "dev:merchant": "npm run prepare:schemas && spectaql -D configs/merchant.yml",
+    "dev:customer": "npm run prepare:schemas && spectaql -D configs/customer.yml",
+    "dev:admin": "npm run prepare:schemas && spectaql -D configs/admin.yml"
+  },
+  "devDependencies": {
+    "spectaql": "^3.0.6"
+  }
+}
