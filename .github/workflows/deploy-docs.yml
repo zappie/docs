@@ -35,8 +35,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/api
           path: api
-          # If the api repo is private, provide a token with read access:
-          # token: ${{ secrets.API_REPO_TOKEN }}
+          token: ${{ secrets.API_REPO_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
