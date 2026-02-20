@@ -33,7 +33,7 @@ jobs:
       - name: Checkout api repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository_owner }}/api
+          repository: zappie/api
           path: api
           token: ${{ secrets.API_REPO_TOKEN }}
 
