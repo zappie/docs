@@ -31,7 +31,7 @@ info:
 
     Use this API to browse businesses, place orders, manage your cart,
     track deliveries, handle payments, and manage your wallet.
-  version: '1.0.0'
+  version: "1.0.0"
   x-htmlTitle: Zappie Customer API Reference
   contact:
     name: Zappie Support

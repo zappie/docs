@@ -31,7 +31,7 @@ info:
 
     Use this API to manage businesses, customers, orders, payments,
     payouts, settlements, staff, and platform-wide configuration.
-  version: '1.0.0'
+  version: "1.0.0"
   x-htmlTitle: Zappie Admin API Reference
   contact:
     name: Zappie Support

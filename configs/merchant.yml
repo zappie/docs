@@ -34,7 +34,7 @@ info:
 
     Use this API to manage your business, menus, orders, inventory,
     payments, staff, and more.
-  version: '1.0.0'
+  version: "1.0.0"
   x-htmlTitle: Zappie Merchant API Reference
   contact:
     name: Zappie Support
