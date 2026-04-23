@@ -1,8 +1,11 @@
 # Zappie API Documentation
 
-Static GraphQL API documentation for the Zappie platform, generated with [SpectaQL](https://github.com/anvilco/spectaql).
+Static API documentation for the Zappie platform.
 
-Covers three APIs — **Merchant**, **Customer**, and **Admin** — each built from the shared common schema plus its own app-specific schema files.
+Covers four APIs:
+
+- **Merchant**, **Customer**, and **Admin** — GraphQL APIs generated with [SpectaQL](https://github.com/anvilco/spectaql), built from the shared common schema plus app-specific schema files.
+- **B2B** — REST API documented via an OpenAPI 3.0 spec, rendered with [Redocly CLI](https://redocly.com/docs/cli/).
 
 ---
 
@@ -30,15 +33,16 @@ Build static HTML for a specific API:
 npm run generate:merchant
 npm run generate:customer
 npm run generate:admin
+npm run generate:b2b
 ```
 
-Or build all three at once:
+Or build all four at once:
 
 ```bash
 npm run generate:all
 ```
 
-Output is written to `public/{merchant,customer,admin}/index.html`.
+Output is written to `public/{merchant,customer,admin,b2b}/index.html`.
 
 ## Live Preview
 
@@ -50,6 +54,12 @@ npm run dev:customer
 npm run dev:admin
 ```
 
+For the B2B API (Redocly preview on [http://localhost:4000](http://localhost:4000)):
+
+```bash
+npm run dev:b2b
+```
+
 ---
 
 ## Project Structure
@@ -59,6 +69,7 @@ configs/
   merchant.yml          # SpectaQL config for the Merchant API
   customer.yml          # SpectaQL config for the Customer API
   admin.yml             # SpectaQL config for the Admin API
+  b2b.yaml              # OpenAPI 3.0 spec for the B2B REST API
 
 schemas/
   base.gql              # Stub base types required for SDL merging
@@ -71,6 +82,7 @@ public/                 # Generated HTML output (git-ignored)
   merchant/
   customer/
   admin/
+  b2b/
 ```
 
 ## How It Works

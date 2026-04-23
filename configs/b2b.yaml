@@ -1,0 +1,320 @@
+openapi: "3.0.3"
+
+info:
+  title: Zappie B2B API
+  version: "1.0.0"
+  description: |
+    REST API for business-to-business integrations with the Zappie platform.
+
+    Use this API to authenticate with your API credentials and programmatically
+    initiate payouts, query payout status, resolve bank account names, and
+    retrieve the list of supported banks.
+  contact:
+    name: Zappie Support
+    email: support@zappie.ai
+
+servers:
+  - url: https://api.zappie.com/b2b
+    description: Production
+
+tags:
+  - name: Authentication
+    description: Obtain a short-lived bearer token using your API key and secret.
+  - name: Payouts
+    description: Initiate and query payout transfers.
+  - name: Banks
+    description: Look up supported banks and resolve account names.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        Pass the token returned by `POST /v1/authenticate` as a Bearer token
+        in the `Authorization` header.
+
+  schemas:
+    AuthRequest:
+      type: object
+      required:
+        - apiKey
+        - secretKey
+      properties:
+        apiKey:
+          type: string
+          description: Your business API key.
+          example: "pk_live_abc123"
+        secretKey:
+          type: string
+          description: Your business secret key.
+          example: "sk_live_xyz789"
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Bearer token to use in subsequent requests.
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        expiresIn:
+          type: integer
+          description: Token lifetime in seconds.
+          example: 3600
+
+    InitiatePayoutRequest:
+      type: object
+      required:
+        - reference
+        - amount
+        - bankSlug
+        - accountNumber
+        - accountName
+      properties:
+        reference:
+          type: string
+          description: Your unique reference for this payout. Used for idempotency.
+          example: "payout-ref-001"
+        amount:
+          type: integer
+          description: Amount to pay out in the smallest currency unit (e.g. kobo).
+          example: 500000
+        bankSlug:
+          type: string
+          description: Slug identifier for the destination bank (from `GET /v1/payouts/banks`).
+          example: "access-bank"
+        accountNumber:
+          type: string
+          description: Destination bank account number.
+          example: "0123456789"
+        accountName:
+          type: string
+          description: Name of the destination account holder.
+          example: "John Doe"
+        narration:
+          type: string
+          nullable: true
+          description: Optional transfer narration shown on the recipient's statement.
+          example: "Vendor payment - April 2026"
+
+    PayoutResponse:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Unique reference for the payout.
+          example: "payout-ref-001"
+        status:
+          type: string
+          enum:
+            - PENDING
+            - SUCCESSFUL
+            - FAILED
+          description: Current status of the payout.
+          example: "PENDING"
+        amount:
+          type: integer
+          description: Payout amount in the smallest currency unit.
+          example: 500000
+        fee:
+          type: integer
+          description: Transaction fee applied in the smallest currency unit.
+          example: 5000
+
+    Bank:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the bank.
+          example: "clx1a2b3c"
+        name:
+          type: string
+          description: Human-readable bank name.
+          example: "Access Bank"
+        slug:
+          type: string
+          description: Slug used to reference this bank in payout requests.
+          example: "access-bank"
+
+    ResolveAccountResponse:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: Resolved name of the bank account holder.
+          example: "John Doe"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+          example: "Invalid credentials"
+
+paths:
+  /v1/authenticate:
+    post:
+      summary: Authenticate
+      description: |
+        Exchange your API key and secret key for a short-lived bearer token.
+        The token expires after `expiresIn` seconds (currently 3 600 seconds / 1 hour).
+      operationId: authenticate
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRequest"
+      responses:
+        "200":
+          description: Authentication successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Invalid credentials or malformed request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalidCredentials:
+                  summary: Invalid credentials
+                  value:
+                    error: "Invalid credentials"
+                invalidRequest:
+                  summary: Malformed request body
+                  value:
+                    error: "Invalid request"
+
+  /v1/payouts/initiate:
+    post:
+      summary: Initiate a payout
+      description: |
+        Submit a new payout transfer. The `reference` field acts as an idempotency
+        key — submitting the same reference twice will not create a duplicate transfer.
+      operationId: initiatePayout
+      tags:
+        - Payouts
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InitiatePayoutRequest"
+      responses:
+        "200":
+          description: Payout created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayoutResponse"
+        "400":
+          description: Validation error or unknown bank.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/payouts/{reference}:
+    get:
+      summary: Get a payout
+      description: Retrieve the current status and details of a payout by its reference.
+      operationId: getPayout
+      tags:
+        - Payouts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: reference
+          in: path
+          required: true
+          description: The unique reference of the payout.
+          schema:
+            type: string
+          example: "payout-ref-001"
+      responses:
+        "200":
+          description: Payout details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayoutResponse"
+        "400":
+          description: Reference not found or lookup error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/payouts/banks:
+    get:
+      summary: List supported banks
+      description: Returns the list of all active banks that can be used as payout destinations.
+      operationId: getBanks
+      tags:
+        - Banks
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: List of supported banks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bank"
+        "400":
+          description: Error fetching banks.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/bank/resolve:
+    get:
+      summary: Resolve account name
+      description: |
+        Verify a bank account number and retrieve the account holder's name
+        before initiating a payout.
+      operationId: resolveAccount
+      tags:
+        - Banks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: accountNumber
+          in: query
+          required: true
+          description: The bank account number to resolve.
+          schema:
+            type: string
+          example: "0123456789"
+        - name: bankSlug
+          in: query
+          required: true
+          description: Slug of the bank that holds the account.
+          schema:
+            type: string
+          example: "access-bank"
+      responses:
+        "200":
+          description: Account name resolved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResolveAccountResponse"
+        "400":
+          description: Account could not be resolved or bank not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
