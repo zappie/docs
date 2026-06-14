@@ -16,7 +16,7 @@
     "dev:b2b": "redocly preview-docs configs/b2b.yaml --config redocly.yaml"
   },
   "devDependencies": {
-    "@redocly/cli": "^1.0.0",
+    "@redocly/cli": "^1.34.15",
     "spectaql": "^3.0.6"
   }
 }
