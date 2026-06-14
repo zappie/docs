@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Zappie B2B REST API reference for authentication, payouts, and banking workflows."
+    />
+    <meta name="theme-color" content="#0b1f14" />
+    <link rel="icon" href="../assets/zappie-mark.svg" type="image/svg+xml" />
+    <title>{{title}}</title>
+    <style>
+      body {
+        margin: 0;
+        background: #fff;
+      }
+
+      ::selection {
+        background: #c0f29f;
+        color: #10231a;
+      }
+
+      .zappie-docs-home {
+        position: fixed;
+        z-index: 20;
+        top: 24px;
+        left: 20px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 8px;
+      }
+
+      .zappie-docs-home:focus-visible {
+        outline: 3px solid rgba(79, 166, 61, 0.24);
+        outline-offset: 4px;
+      }
+
+      .zappie-docs-home img {
+        display: block;
+        width: 142px;
+        height: auto;
+      }
+
+      .zappie-mobile-header {
+        display: none;
+      }
+
+      @media (max-width: 50rem) {
+        .zappie-docs-home {
+          display: none;
+        }
+
+        .zappie-mobile-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          min-height: 64px;
+          padding: 0 20px;
+          border-bottom: 1px solid #dfe8dd;
+          background: #f7faf6;
+        }
+
+        .zappie-mobile-header a {
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .zappie-mobile-header img {
+          display: block;
+          width: 112px;
+          height: auto;
+        }
+
+        .zappie-mobile-header span {
+          color: #526057;
+          font-size: 0.75rem;
+          font-weight: 700;
+        }
+      }
+    </style>
+    {{{redocHead}}}
+  </head>
+  <body>
+    <a
+      class="zappie-docs-home"
+      href="../"
+      aria-label="Back to Zappie API documentation"
+    >
+      <img src="../assets/zappie-logo.png" alt="Zappie" />
+    </a>
+    <div class="zappie-mobile-header">
+      <a href="../" aria-label="Back to Zappie API documentation">
+        <img src="../assets/zappie-logo.png" alt="Zappie" />
+      </a>
+      <span>API docs</span>
+    </div>
+    {{{redocHTML}}}
+  </body>
+</html>

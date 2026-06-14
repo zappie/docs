@@ -3,6 +3,9 @@ spectaql:
   targetDir: public/admin
   # Custom theme with logical sidebar grouping
   themeDir: themes/admin
+  logoFile: assets/zappie-logo.png
+  logoHeightPx: 28
+  faviconFile: assets/zappie-mark.svg
   # Embed all CSS/JS into a single HTML file
   oneFile: false
 

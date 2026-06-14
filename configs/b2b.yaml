@@ -3,6 +3,11 @@ openapi: "3.0.3"
 info:
   title: Zappie B2B API
   version: "1.0.0"
+  x-logo:
+    url: ../assets/zappie-logo.png
+    altText: Zappie
+    href: ../
+    backgroundColor: transparent
   description: |
     REST API for business-to-business integrations with the Zappie platform.
 
