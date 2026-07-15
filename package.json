@@ -8,7 +8,7 @@
     "generate:customer": "npm run prepare:schemas && spectaql configs/customer.yml",
     "generate:admin": "npm run prepare:schemas && spectaql configs/admin.yml",
     "generate:b2b": "redocly build-docs configs/b2b.yaml --config redocly.yaml --template templates/redoc.hbs --disableGoogleFont --output public/b2b/index.html",
-    "generate:landing": "node -e \"const fs=require('fs');fs.mkdirSync('public',{recursive:true});fs.copyFileSync('landing/index.html','public/index.html');fs.cpSync('assets','public/assets',{recursive:true});console.log('✓ landing page and brand assets → public/')\"",
+    "generate:landing": "node -e \"const fs=require('fs');fs.mkdirSync('public',{recursive:true});fs.copyFileSync('landing/index.html','public/index.html');fs.cpSync('assets','public/assets',{recursive:true});console.log('\u2713 landing page and brand assets \u2192 public/')\"",
     "generate:all": "npm run prepare:schemas && spectaql configs/merchant.yml && spectaql configs/customer.yml && spectaql configs/admin.yml && npm run generate:b2b && npm run generate:landing",
     "dev:merchant": "npm run prepare:schemas && spectaql -D configs/merchant.yml",
     "dev:customer": "npm run prepare:schemas && spectaql -D configs/customer.yml",
@@ -16,7 +16,19 @@
     "dev:b2b": "redocly preview-docs configs/b2b.yaml --config redocly.yaml"
   },
   "devDependencies": {
-    "@redocly/cli": "^1.34.15",
+    "@redocly/cli": "^2.39.0",
     "spectaql": "^3.0.6"
+  },
+  "overrides": {
+    "spectaql": {
+      "tmp": "^0.2.7"
+    },
+    "grunt": {
+      "js-yaml": "^3.15.0",
+      "minimatch": "^3.1.4"
+    },
+    "globule": {
+      "minimatch": "^3.1.4"
+    }
   }
 }

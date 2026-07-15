@@ -10,6 +10,47 @@
 const fs = require("fs");
 const path = require("path");
 const { sync: globSync } = require("glob");
+const { parse } = require("graphql");
+
+/**
+ * gqlgen accepts some SDL that graphql-js (and therefore SpectaQL) rejects.
+ * Remove the offending bits — they are codegen details with no meaning for
+ * the rendered docs:
+ *   - @goModel repeated on a type extension when the base type already has it
+ *   - @deprecated on required (non-null, no default) input fields
+ * Cuts are made by AST source location so the original text (comments,
+ * formatting, file markers) is otherwise preserved.
+ */
+function sanitizeForGraphqlJs(sdl) {
+  const doc = parse(sdl);
+  const cuts = [];
+  for (const def of doc.definitions) {
+    if (
+      def.kind === "ObjectTypeExtension" ||
+      def.kind === "InterfaceTypeExtension"
+    ) {
+      for (const d of def.directives ?? []) {
+        if (d.name.value === "goModel") cuts.push([d.loc.start, d.loc.end]);
+      }
+    }
+    if (
+      def.kind === "InputObjectTypeDefinition" ||
+      def.kind === "InputObjectTypeExtension"
+    ) {
+      for (const f of def.fields ?? []) {
+        if (f.type.kind !== "NonNullType" || f.defaultValue != null) continue;
+        for (const d of f.directives ?? []) {
+          if (d.name.value === "deprecated") cuts.push([d.loc.start, d.loc.end]);
+        }
+      }
+    }
+  }
+  let out = sdl;
+  for (const [start, end] of cuts.sort((a, b) => b[0] - a[0])) {
+    out = out.slice(0, start) + out.slice(end);
+  }
+  return out;
+}
 
 const ROOT = path.resolve(__dirname, "..");
 const API_ROOT = path.resolve(ROOT, "../api");
@@ -88,7 +129,7 @@ for (const { name, globs } of APIs) {
     }
   }
 
-  const merged = sections.join("\n\n") + "\n";
+  const merged = sanitizeForGraphqlJs(sections.join("\n\n") + "\n");
   const outFile = path.join(outDir, `${name}.graphql`);
   fs.writeFileSync(outFile, merged);
   console.log(
